@@ -1,0 +1,9 @@
+# .gitignore file for .NET projects
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

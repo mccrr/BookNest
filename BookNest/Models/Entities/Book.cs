@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookNest.Models
+namespace BookNest.Models.Entities
 {
     public class Book
     {
+        public Book() { }
         [Key]
         [Required]
         [MaxLength(13)]
@@ -24,5 +25,7 @@ namespace BookNest.Models
         public required int AuthorId { get; set; }
         public required Author Author { get; set; }
         public ICollection<BookUser>? BookUsers { get; set; }
+        public ICollection<ShelfBook>? ShelfBooks { get; set; }
+        public ICollection<GroupBook>? GroupBooks { get; set; }
     }
 }

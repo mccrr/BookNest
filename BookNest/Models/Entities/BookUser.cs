@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookNest.Models
+namespace BookNest.Models.Entities
 {
     public class BookUser
     {
-        public int BookId { get; set; }
+        public BookUser() { }
+        public string BookId { get; set; }
         public required Book Book { get; set; }
 
         public int UserId { get; set; }

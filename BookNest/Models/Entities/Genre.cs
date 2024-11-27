@@ -1,15 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookNest.Models
+namespace BookNest.Models.Entities
 {
-    public class Author
+    public class Genre
     {
+        public Genre() { }
         [Key]
         public int Id { get; set; }
-
         [Required]
-        [StringLength(100)]
-        public required string Name { get; set; }
+        public required string Text { get; set; }
         public ICollection<Book>? Books { get; set; }
     }
 }

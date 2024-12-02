@@ -5,7 +5,7 @@ namespace BookNest.Utils
 {
     public class CustomException : Exception
     {
-        private readonly HttpStatusCode ErrorCode;
+        public HttpStatusCode ErrorCode { get; set; } = HttpStatusCode.InternalServerError;
         public CustomException(string message) : base(message) { }
         public CustomException(HttpStatusCode errorCode, string message) : base(message) {
             ErrorCode = errorCode;

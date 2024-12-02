@@ -1,5 +1,7 @@
 ﻿using BookNest.Utils;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 
 namespace BookNest.Middleware
 {
@@ -22,9 +24,25 @@ namespace BookNest.Middleware
             }
         }
 
-        private static IBaseResponse Handle(HttpContext context, Exception ex) {
-            return BaseResponse<object>
+        private static async Task Handle(HttpContext context, Exception ex) {
+            string message;
+            HttpStatusCode statusCode;
+            if (ex is CustomException customException)
+            {
+                statusCode = customException.ErrorCode;
+                message = customException.Message;
+            }
+            else
+            {
+                message = "An unexpected error occured.";
+                statusCode = HttpStatusCode.InternalServerError;
+            }
+            var response =  BaseResponse<object>
                 .ErrorResponse(System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            context.Response.StatusCode = (int)statusCode;
+            context.Response.ContentType = "application/json";
+            var responseText = JsonSerializer.Serialize(response);
+            await context.Response.WriteAsync(responseText);
         }
     }
 }

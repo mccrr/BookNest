@@ -1,6 +1,7 @@
 ﻿using BookNest.Data;
 using BookNest.Dtos;
 using BookNest.Models.Entities;
+using BookNest.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookNest.DataAccess
@@ -19,7 +20,17 @@ namespace BookNest.DataAccess
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id==id);
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<User> GetByUsernameAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<User> AddAsync(User user)
@@ -32,6 +43,7 @@ namespace BookNest.DataAccess
         public async Task<User> UpdateAsync(UpdateUserDto updateUserDto, int id)
         {
             var user = await _context.Users.FindAsync(id);
+            if (user == null)  throw new NotFoundException($"User with id {id} doesnt exist");
             if (updateUserDto.FirstName != null) user.FirstName = updateUserDto.FirstName;
             if (updateUserDto.LastName != null) user.LastName = updateUserDto.LastName;
             if (updateUserDto.Avatar != null) user.Avatar = updateUserDto.Avatar;
@@ -40,8 +52,10 @@ namespace BookNest.DataAccess
             return user;
         }
 
-        public async Task DeleteAsync(User user)
+        public async Task DeleteAsync(int id)
         {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) throw new NotFoundException($"User with id {id} doesnt exist");
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }

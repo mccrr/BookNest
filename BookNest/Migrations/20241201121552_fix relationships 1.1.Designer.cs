@@ -3,6 +3,7 @@ using System;
 using BookNest.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookNest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241201121552_fix relationships 1.1")]
+    partial class fixrelationships11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -478,8 +481,7 @@ namespace BookNest.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(63)
-                        .HasColumnType("varchar(63)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -602,13 +604,13 @@ namespace BookNest.Migrations
                     b.HasOne("BookNest.Models.Entities.User", "Receiver")
                         .WithMany("ReceivedFriendRequests")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BookNest.Models.Entities.User", "Sender")
                         .WithMany("SentFriendRequests")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Receiver");

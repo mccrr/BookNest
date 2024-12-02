@@ -25,6 +25,8 @@ options.UseMySql(
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UserDao>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<BookDao>();
+builder.Services.AddScoped<BookService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

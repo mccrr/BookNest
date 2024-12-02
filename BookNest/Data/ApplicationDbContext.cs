@@ -29,6 +29,7 @@ namespace BookNest.Data
         public DbSet<ShelfBook> ShelfBooks{ get; set; }
         public DbSet<UserAchievement> UserAchievements{ get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ///// UserAchievement relationships
@@ -39,12 +40,14 @@ namespace BookNest.Data
             modelBuilder.Entity<UserAchievement>()
                 .HasOne(ua => ua.User)
                 .WithMany(u => u.UserAchievements)
-                .HasForeignKey(ua => ua.UserId);
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserAchievement>()
                 .HasOne(ua => ua.Achievement)
                 .WithMany(a => a.UserAchievements)
-                .HasForeignKey(ua => ua.AchievementId);
+                .HasForeignKey(ua => ua.AchievementId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             ///// UserNotification relationships
             modelBuilder.Entity<UserNotification>()
@@ -68,12 +71,14 @@ namespace BookNest.Data
                 .HasOne(bu=>bu.Book)
                 .WithMany(b=>b.BookUsers)
                 .HasForeignKey(bu=>bu.BookId)
-                .HasPrincipalKey(b=>b.Isbn);
+                .HasPrincipalKey(b=>b.Isbn)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<BookUser>()
                 .HasOne(bu => bu.User)
                 .WithMany(u => u.BookUsers)
-                .HasForeignKey(bu => bu.UserId);
+                .HasForeignKey(bu => bu.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             ////Mute relationships
             modelBuilder.Entity<Mute>()
@@ -82,12 +87,14 @@ namespace BookNest.Data
             modelBuilder.Entity<Mute>()
                 .HasOne(m => m.Muted)
                 .WithMany(u => u.Muted)
-                .HasForeignKey(m => m.MutedId);
+                .HasForeignKey(m => m.MutedId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Mute>()
                 .HasOne(m => m.Muter)
                 .WithMany(u => u.Muter)
-                .HasForeignKey(m => m.MuterId);
+                .HasForeignKey(m => m.MuterId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             ////Friend relationships
             modelBuilder.Entity<Friend>()
@@ -96,12 +103,14 @@ namespace BookNest.Data
             modelBuilder.Entity<Friend>()
                 .HasOne(f => f.User)
                 .WithMany(u => u.FriendsInitiated)
-                .HasForeignKey(f => f.UserId);
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Friend>()
                 .HasOne(f => f.Friendd)
                 .WithMany(u => u.FriendsReceived)
-                .HasForeignKey(f => f.FriendId);
+                .HasForeignKey(f => f.FriendId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             ///// FriendRequest relationships
@@ -112,13 +121,13 @@ namespace BookNest.Data
                 .HasOne(fr => fr.Sender)
                 .WithMany(f => f.SentFriendRequests)
                 .HasForeignKey(f=>f.SenderId)
-                .OnDelete(DeleteBehavior.Restrict); ;
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<FriendRequest>()
                 .HasOne(fr => fr.Receiver)
                 .WithMany(f => f.ReceivedFriendRequests)
                 .HasForeignKey(f => f.ReceiverId)
-                .OnDelete(DeleteBehavior.Restrict); ;
+                .OnDelete(DeleteBehavior.Cascade);
 
             //// GroupBook relationships
             // GroupBook relationships
@@ -129,13 +138,15 @@ namespace BookNest.Data
                 .HasOne(gb => gb.Book)
                 .WithMany(b => b.GroupBooks)
                 .HasForeignKey(gb => gb.BookId)
-                .HasPrincipalKey(b => b.Isbn); // Matches Book's primary key
+                .HasPrincipalKey(b => b.Isbn)
+                .OnDelete(DeleteBehavior.Cascade); // Matches Book's primary key
 
             modelBuilder.Entity<GroupBook>()
                 .HasOne(gb => gb.GroupUser)
                 .WithMany(gu => gu.GroupBooks)
                 .HasForeignKey(gb => new { gb.UserId, gb.GroupId }) // Composite foreign key
-                .HasPrincipalKey(gu => new { gu.UserId, gu.GroupId }); // Matches GroupUser's composite key
+                .HasPrincipalKey(gu => new { gu.UserId, gu.GroupId })
+                .OnDelete(DeleteBehavior.Cascade); // Matches GroupUser's composite key
 
 
             //// GroupRequest relationships
@@ -145,12 +156,14 @@ namespace BookNest.Data
             modelBuilder.Entity<GroupRequest> ()
                 .HasOne(gr => gr.Group)
                 .WithMany(g => g.GroupRequests)
-                .HasForeignKey(gr => gr.GroupId);
+                .HasForeignKey(gr => gr.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<GroupRequest>()
                 .HasOne(gr => gr.User)
                 .WithMany(u => u.GroupRequests)
-                .HasForeignKey(gr => gr.GroupId);
+                .HasForeignKey(gr => gr.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //// GroupUser relationships
             modelBuilder.Entity<GroupUser>()
@@ -159,12 +172,14 @@ namespace BookNest.Data
             modelBuilder.Entity <GroupUser>()
                 .HasOne(gu => gu.User)
                 .WithMany(u => u.GroupUsers)
-                .HasForeignKey(gu => gu.UserId);
+                .HasForeignKey(gu => gu.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<GroupUser> ()  
                 .HasOne (gu => gu.Group)
                 .WithMany(g => g.GroupUsers)
-                .HasForeignKey(gu => gu.GroupId);
+                .HasForeignKey(gu => gu.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //// ShelfBook relationships
             modelBuilder.Entity<ShelfBook>()
@@ -173,13 +188,25 @@ namespace BookNest.Data
             modelBuilder.Entity<ShelfBook> ()
                 .HasOne(sb => sb.Shelf)
                 .WithMany(s => s.ShelfBooks)
-                .HasForeignKey(sb => sb.ShelfId);
+                .HasForeignKey(sb => sb.ShelfId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ShelfBook>()
                 .HasOne(sb => sb.Book)
                 .WithMany(s => s.ShelfBooks)
                 .HasForeignKey(sb => sb.BookId)
-                .HasPrincipalKey(b => b.Isbn);
+                .HasPrincipalKey(b => b.Isbn)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            /// RefreshToken relationships
+            modelBuilder.Entity<RefreshToken>()
+                .HasKey(rt => rt.UserId);
+
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         }

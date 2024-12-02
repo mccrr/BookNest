@@ -1,11 +1,6 @@
 ﻿using BookNest.DataAccess;
 using BookNest.Models.Entities;
 using BookNest.Dtos;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.ComponentModel;
-using Microsoft.AspNetCore.Mvc;
-using BCrypt.Net;
-using BookNest.Utils;
 
 namespace BookNest.Services
 {

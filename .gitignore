@@ -6,3 +6,11 @@
 /.vs/BookNest/FileContentIndex
 /.vs/BookNest
 /.vs
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

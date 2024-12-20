@@ -12,7 +12,7 @@ namespace BookNest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController
+    public class AuthController : ControllerBase
     {
         private readonly UserService _userService;
         private readonly TokenService _tokenService;
@@ -51,6 +51,7 @@ namespace BookNest.Controllers
             if (!_userService.VerifyPassword(logindto.Password, dbUser.Password))
                 return BaseResponse<object>.ErrorResponse(HttpStatusCode.BadRequest, "Invalid credentials!");
 
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, dbUser.Id.ToString()),
@@ -66,19 +67,18 @@ namespace BookNest.Controllers
             var refreshToken = await _tokenService.GenerateRefreshTokenAsync(dbUser.Id);
             var response = new AuthResponseDto(accessToken, refreshToken.Token, dbUser.Id);
 
+
             return BaseResponse<AuthResponseDto>.SuccessResponse(response);
         }
 
         [HttpPost("logout")]
-        public async Task<IBaseResponse> Logout(int id)
+        public async Task<IBaseResponse> Logout()
         {
-            try
-            {
-                var refreshtoken = await _tokenService.GetRefreshTokenByUser(id);
-                if (refreshtoken == null) return BaseResponse<object>.ErrorResponse(HttpStatusCode.BadRequest, "You're already logged  out!");
-                await _tokenService.RevokeRefreshTokenAsync(refreshtoken.Token);
-                return BaseResponse<object>.SuccessResponse(null);
-            } catch (Exception E) { return BaseResponse<object>.ErrorResponse(HttpStatusCode.InternalServerError, E.Message); }
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var refreshtoken = await _tokenService.GetRefreshTokenByUser(userId);
+            if (refreshtoken == null) return BaseResponse<object>.ErrorResponse(HttpStatusCode.BadRequest, "You're already logged  out!");
+            await _tokenService.RevokeRefreshTokenAsync(refreshtoken.Token);
+            return BaseResponse<object>.SuccessResponse(null);
         }
 
         [HttpPost("refreshtoken")]

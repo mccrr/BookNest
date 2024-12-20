@@ -1,8 +1,8 @@
 ﻿using BookNest.Data;
-using BookNest.Dtos;
 using BookNest.Models.Entities;
 using BookNest.Utils;
 using Microsoft.EntityFrameworkCore;
+using BookNest.Dtos.Users;
 
 namespace BookNest.DataAccess
 {

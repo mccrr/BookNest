@@ -14,6 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin() // Herhangi bir domain
+              .AllowAnyHeader() // Herhangi bir header
+              .AllowAnyMethod(); // Herhangi bir HTTP metodu (GET, POST, vb.)
+    });
+});
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -29,6 +40,12 @@ builder.Services.AddScoped<BookDao>();
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<ReviewDao>();
 builder.Services.AddScoped<ReviewService>();
+builder.Services.AddScoped<ShelfService>();
+builder.Services.AddScoped<ShelfDao>();
+builder.Services.AddScoped<ShelfBookDao>();
+builder.Services.AddScoped<ShelfBookService>();
+builder.Services.AddScoped<BookUserDao>();
+builder.Services.AddScoped<BookProgressService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -62,5 +79,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors("AllowAll"); // Veya "AllowAll"
 
 app.Run();

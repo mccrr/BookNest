@@ -39,7 +39,7 @@ namespace BookNest.Controllers
             return BaseResponse<List<Review>>.SuccessResponse(reviews);
         }
 
-        [HttpGet("book/{id}")]
+        [HttpGet("book/{isbn}")]
         public async Task<IBaseResponse> GetByBook(string isbn)
         {
             var reviews = await _reviewService.GetByBook(isbn);

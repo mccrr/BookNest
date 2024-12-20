@@ -10,7 +10,7 @@ namespace BookNest.Services
         private readonly ShelfBookDao _shelfBookDao;
         private readonly BookService _bookService;
         private readonly ShelfService _shelfService;
-        ShelfBookService(ShelfBookDao shelfBookDao, BookService bookService, ShelfService shelfService)
+        public ShelfBookService(ShelfBookDao shelfBookDao, BookService bookService, ShelfService shelfService)
         {
             _shelfBookDao = shelfBookDao;
             _bookService = bookService;

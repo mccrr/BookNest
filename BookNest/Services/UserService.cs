@@ -1,6 +1,7 @@
 ﻿using BookNest.DataAccess;
 using BookNest.Models.Entities;
-using BookNest.Dtos;
+using BookNest.Utils;
+using BookNest.Dtos.Users;
 
 namespace BookNest.Services
 {
@@ -32,6 +33,10 @@ namespace BookNest.Services
         }
         public async Task<User> CreateUser(SignUpDto signUpDto)
         {
+            var existingEmail = await userDao.GetByEmailAsync(signUpDto.Email);
+            if (existingEmail!= null) throw new CustomException("There already is an account with this email!");
+            var existingUsername = await userDao.GetByUsernameAsync(signUpDto.Username);
+            if (existingUsername != null) throw new CustomException("Username is not available!");
             signUpDto.Password = HashPassword(signUpDto.Password);
             var user = new User(signUpDto);
             var dbUser = await userDao.AddAsync(user);

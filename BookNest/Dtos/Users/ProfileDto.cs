@@ -1,45 +1,39 @@
-﻿using BookNest.Dtos.Users;
-using System.ComponentModel;
+﻿using BookNest.Models.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
-namespace BookNest.Models.Entities
+namespace BookNest.Dtos.Users
 {
-    public class User
+    public class ProfileDto
     {
-        public User() { }
-        public User(SignUpDto signUpDto)
+        public ProfileDto(User user)
         {
-            Username = signUpDto.Username;
-            FirstName = signUpDto.FirstName;
-            LastName = signUpDto.LastName;
-            Age = signUpDto.Age;
-            Email = signUpDto.Email;
-            Password = signUpDto.Password;
+            Id = user.Id;
+            Username = user.Username;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Age = user.Age;
+            Email = user.Email;
+            Avatar = user.Avatar;
+            BookUsers = user.BookUsers;
+            UserAchievements = user.UserAchievements;
+            UserNotifications = user.UserNotifications;
+            SentFriendRequests = user.SentFriendRequests;
+            ReceivedFriendRequests = user.ReceivedFriendRequests;
+            GroupRequests = user.GroupRequests;
+            GroupUsers = user.GroupUsers;
+            FriendsInitiated = user.FriendsInitiated;
+            FriendsReceived = user.FriendsReceived;
+            Muted = user.Muted;
+            Muter = user.Muter;
         }
-
-        [Key]
         public int Id { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string Username { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string FirstName { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string LastName { get; set; }
-        [Required]
         public int Age { get; set; }
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
-        [Required]
-        [StringLength(63)]
-        public string Password { get; set; }
-        [StringLength(255)]
-        [DefaultValue("https://www.shutterstock.com/search/blank-profile-picture")]
-        public string Avatar { get; set; } = "https://www.shutterstock.com/search/blank-profile-picture";
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public string Avatar { get; set; }
 
         public ICollection<BookUser>? BookUsers { get; set; }
         public ICollection<UserAchievement> UserAchievements { get; set; }
@@ -52,6 +46,5 @@ namespace BookNest.Models.Entities
         public ICollection<Friend> FriendsReceived { get; set; }
         public ICollection<Mute> Muted { get; set; }
         public ICollection<Mute> Muter { get; set; }
-
     }
 }

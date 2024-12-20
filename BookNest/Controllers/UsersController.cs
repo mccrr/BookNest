@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos;
+﻿using BookNest.Dtos.Users;
 using BookNest.Models.Entities;
 using BookNest.Services;
 using BookNest.Utils;
@@ -58,6 +58,13 @@ namespace BookNest.Controllers
                 return BaseResponse<object>.SuccessResponse(new ProfileDto(result));
             }
             catch (Exception E) { return BaseResponse<object>.ErrorResponse(HttpStatusCode.NotFound, E.Message); }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IBaseResponse> DeleteUser(int id)
+        {
+            await userService.DeleteUser(id);
+            return BaseResponse<object>.SuccessResponse(null);
         }
 
     }

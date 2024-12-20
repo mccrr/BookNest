@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos;
+﻿using BookNest.Dtos.Users;
 using BookNest.Models.Entities;
 using BookNest.Services;
 using BookNest.Utils;

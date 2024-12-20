@@ -26,6 +26,12 @@ namespace BookNest.DataAccess
             return result.ToList();
         }
 
+        public async Task<List<Review>> GetByBook(string isbn)
+        {
+            var result = _context.Reviews.Where(r => r.BookId == isbn);
+            return result.ToList();
+        }
+
         public async Task<Review> GetById(int id)
         {
             return await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);

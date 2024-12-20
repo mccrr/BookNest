@@ -9,9 +9,11 @@ namespace BookNest.Services
     {
         private readonly ReviewDao _reviewDao;
         private readonly UserService _userService;
-        public ReviewService(ReviewDao reviewDao, UserService userService) { 
+        private readonly BookService _bookService;
+        public ReviewService(ReviewDao reviewDao, UserService userService, BookService bookService) { 
             _reviewDao = reviewDao;
             _userService = userService;
+            _bookService = bookService;
         }
 
         public async Task<Review> Create(ReviewDto reviewDto, int userId)
@@ -25,6 +27,14 @@ namespace BookNest.Services
         {
             var user = await _userService.GetById(id);
             var reviews = await _reviewDao.GetByUser(id);
+            if (reviews == null) throw new CustomException("Internal Server Error!");
+            return reviews;
+        }
+
+        public async Task<List<Review>> GetByBook(string isbn)
+        {
+            await _bookService.GetById(isbn);
+            var reviews = await _reviewDao.GetByBook(isbn);
             if (reviews == null) throw new CustomException("Internal Server Error!");
             return reviews;
         }

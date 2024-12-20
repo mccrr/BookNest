@@ -39,6 +39,13 @@ namespace BookNest.Controllers
             return BaseResponse<List<Review>>.SuccessResponse(reviews);
         }
 
+        [HttpGet("book/{id}")]
+        public async Task<IBaseResponse> GetByBook(string isbn)
+        {
+            var reviews = await _reviewService.GetByBook(isbn);
+            return BaseResponse<List<Review>>.SuccessResponse(reviews);
+        }
+
         [HttpDelete("id/{id}")]
         public async Task<IBaseResponse> DeleteById(int id)
         {

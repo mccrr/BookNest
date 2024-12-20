@@ -27,6 +27,8 @@ builder.Services.AddScoped<UserDao>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<BookDao>();
 builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<ReviewDao>();
+builder.Services.AddScoped<ReviewService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

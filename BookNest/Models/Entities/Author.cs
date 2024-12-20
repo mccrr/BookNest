@@ -5,12 +5,16 @@ namespace BookNest.Models.Entities
     public class Author
     {
         public Author() { }
+
+        public Author(string name) {
+            Name = name; 
+        }
         [Key]
         public int Id { get; set; }
 
         [Required]
         [StringLength(100)]
-        public required string Name { get; set; }
+        public string Name { get; set; }
         public ICollection<Book>? Books { get; set; }
     }
 }

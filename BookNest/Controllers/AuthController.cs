@@ -65,7 +65,7 @@ namespace BookNest.Controllers
             if (existingRfToken != null) await _tokenService.RevokeRefreshTokenAsync(existingRfToken.Token);
 
             var refreshToken = await _tokenService.GenerateRefreshTokenAsync(dbUser.Id);
-            var response = new AuthResponseDto(accessToken, refreshToken.Token, dbUser.Id);
+            var response = new AuthResponseDto(accessToken, refreshToken.Token, dbUser);
 
 
             return BaseResponse<AuthResponseDto>.SuccessResponse(response);

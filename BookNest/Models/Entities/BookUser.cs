@@ -5,10 +5,10 @@ namespace BookNest.Models.Entities
 {
     public class BookUser
     {
-        public BookUser(BookUserDto bookUserDto)
+        public BookUser(BookUserDto bookUserDto, int userId)
         {
             BookId = bookUserDto.BookId;
-            UserId = bookUserDto.UserId;
+            UserId = userId;
             Progress = bookUserDto.Progress;
             Status = bookUserDto.Status;
         }
@@ -26,5 +26,6 @@ namespace BookNest.Models.Entities
         [Required]
         [Range(0, 100)]
         public int Progress { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

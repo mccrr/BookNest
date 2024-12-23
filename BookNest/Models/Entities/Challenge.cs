@@ -1,22 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BookNest.Dtos.Challenge;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookNest.Models.Entities
 {
     public class Challenge
     {
         public Challenge() { }
+
+        public Challenge(ChallengeDto dto, int userId)
+        {
+            UserId = userId;
+            Text = dto.Text;
+            Objective = dto.Objective;
+            Type = dto.Type;
+            IsCompleted = dto.IsCompleted;
+            StartedAt = dto.StartedAt;
+            EndsAt = dto.EndsAt;
+        }
         [Key]
         public int Id { get; set; }
         public int UserId { get; set; }
-        public required User User { get; set; }
+        public User User { get; set; }
         [Required]
-        public required string Text { get; set; }
+        public string Text { get; set; }
         [Required]
-        public required string Type { get; set; }
+        public string Type { get; set; }
         [Required]
-        public required int Objective { get; set; }
+        public int Objective { get; set; }
         [Required]
-        public required bool IsCompleted { get; set; }
+        public bool IsCompleted { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [Required]
         public DateTime StartedAt { get; set; }

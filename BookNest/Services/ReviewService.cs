@@ -1,5 +1,5 @@
 ﻿using BookNest.DataAccess;
-using BookNest.Dtos;
+using BookNest.Dtos.Review;
 using BookNest.Models.Entities;
 using BookNest.Utils;
 

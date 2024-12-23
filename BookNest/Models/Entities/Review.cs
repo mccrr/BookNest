@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos;
+﻿using BookNest.Dtos.Review;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookNest.Models.Entities

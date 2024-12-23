@@ -65,13 +65,13 @@ namespace BookNest.Data
 
             //// BookUser relationships
             modelBuilder.Entity<BookUser>()
-                .HasKey(bu => new { bu.UserId, bu.BookId });
+                .HasKey(bu => new { bu.UserId, bu.BookId, bu.Progress });
 
             modelBuilder.Entity<BookUser>()
-                .HasOne(bu=>bu.Book)
-                .WithMany(b=>b.BookUsers)
-                .HasForeignKey(bu=>bu.BookId)
-                .HasPrincipalKey(b=>b.Isbn)
+                .HasOne(bu => bu.Book)
+                .WithMany(b => b.BookUsers)
+                .HasForeignKey(bu => bu.BookId)
+                .HasPrincipalKey(b => b.Isbn)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<BookUser>()

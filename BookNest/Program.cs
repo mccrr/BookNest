@@ -46,6 +46,12 @@ builder.Services.AddScoped<ShelfBookDao>();
 builder.Services.AddScoped<ShelfBookService>();
 builder.Services.AddScoped<BookUserDao>();
 builder.Services.AddScoped<BookProgressService>();
+builder.Services.AddScoped<ChallengeDao>();
+builder.Services.AddScoped<ChallengeService>();
+builder.Services.AddScoped<FriendsDao>();
+builder.Services.AddScoped<FriendsService>();
+builder.Services.AddScoped<AchievementDao>();
+builder.Services.AddScoped<AchievementService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

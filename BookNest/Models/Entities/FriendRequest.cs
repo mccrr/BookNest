@@ -3,6 +3,10 @@
     public class FriendRequest
     {
         public FriendRequest() { }
+        public FriendRequest(int sender, int receiver) { 
+            SenderId = sender;
+            ReceiverId = receiver;
+        }
         public int SenderId { get; set; }
         public User Sender { get; set; }
 

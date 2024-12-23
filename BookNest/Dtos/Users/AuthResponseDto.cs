@@ -4,7 +4,7 @@ namespace BookNest.Dtos.Users
 {
     public class AuthResponseDto
     {
-        public AuthResponseDto(string accessToken, string refreshToken, User user)
+        public AuthResponseDto(string accessToken, string refreshToken, UserDto user)
         {
             AccessToken = accessToken;
             RefreshToken = refreshToken;
@@ -13,6 +13,6 @@ namespace BookNest.Dtos.Users
 
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public User User { get; set; }
+        public UserDto User { get; set; }
     }
 }

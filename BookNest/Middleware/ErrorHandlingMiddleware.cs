@@ -20,7 +20,7 @@ namespace BookNest.Middleware
                 await _next(context);
             }
             catch (Exception ex) {
-                Handle(context,ex);
+                await Handle(context,ex);
             }
         }
 

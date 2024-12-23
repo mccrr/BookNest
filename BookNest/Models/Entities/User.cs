@@ -37,8 +37,8 @@ namespace BookNest.Models.Entities
         [StringLength(63)]
         public string Password { get; set; }
         [StringLength(255)]
-        [DefaultValue("https://www.shutterstock.com/search/blank-profile-picture")]
-        public string Avatar { get; set; } = "https://www.shutterstock.com/search/blank-profile-picture";
+        [DefaultValue("https://www.shutterstock.com/shutterstock/photos/1114445501/display_1500/stock-vector-blank-avatar-photo-place-holder-1114445501.jpg")]
+        public string Avatar { get; set; } = "https://www.shutterstock.com/shutterstock/photos/1114445501/display_1500/stock-vector-blank-avatar-photo-place-holder-1114445501.jpg";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public ICollection<BookUser>? BookUsers { get; set; }

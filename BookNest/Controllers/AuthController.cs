@@ -28,7 +28,7 @@ namespace BookNest.Controllers
             if (dbUser == null) {
                 return BaseResponse<object>.ErrorResponse(HttpStatusCode.BadRequest, "User couldnt be created");
             }
-            return BaseResponse<User>.SuccessResponse(dbUser);
+            return BaseResponse<UserDto>.SuccessResponse(new UserDto(dbUser));
         }
 
         [HttpPost]
@@ -65,8 +65,7 @@ namespace BookNest.Controllers
             if (existingRfToken != null) await _tokenService.RevokeRefreshTokenAsync(existingRfToken.Token);
 
             var refreshToken = await _tokenService.GenerateRefreshTokenAsync(dbUser.Id);
-            var response = new AuthResponseDto(accessToken, refreshToken.Token, dbUser);
-
+            var response = new AuthResponseDto(accessToken, refreshToken.Token, new UserDto(dbUser));
 
             return BaseResponse<AuthResponseDto>.SuccessResponse(response);
         }

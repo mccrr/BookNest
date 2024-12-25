@@ -21,5 +21,12 @@ namespace BookNest.Controllers
             var shelfbook = await _shelfBookService.Add(isbn, shelfId);
             return BaseResponse<ShelfBook>.SuccessResponse(shelfbook);
         }
+
+        [HttpDelete]
+        public async Task<IBaseResponse> Remove(string isbn, int shelfId)
+        {
+            await _shelfBookService.Remove(isbn, shelfId);
+            return BaseResponse<ShelfBook>.SuccessResponse(null);
+        }
     }
 }

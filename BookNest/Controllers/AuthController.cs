@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Eventing.Reader;
 using System.Net;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace BookNest.Controllers
 {
@@ -24,6 +25,9 @@ namespace BookNest.Controllers
         [Route("signup")]
         public async Task<IBaseResponse> SignUp(SignUpDto signUpDto)
         {
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+            if (!emailRegex.IsMatch(signUpDto.Email))
+                return BaseResponse<object>.ErrorResponse(HttpStatusCode.BadRequest,"Invalid Email Address Format.");
             var dbUser = await _userService.CreateUser(signUpDto);
             if (dbUser == null) {
                 return BaseResponse<object>.ErrorResponse(HttpStatusCode.BadRequest, "User couldnt be created");

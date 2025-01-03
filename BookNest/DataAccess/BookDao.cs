@@ -52,5 +52,10 @@ namespace BookNest.DataAccess
         {
             return await _context.Authors.FirstOrDefaultAsync(a =>a.Id == id);
         }
+
+        public async Task<Author> GetAuthorByName(string name)
+        {
+            return await _context.Authors.FirstOrDefaultAsync(a => a.Name == name);
+        }
     }
 }

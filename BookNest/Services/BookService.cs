@@ -37,6 +37,8 @@ namespace BookNest.Services
 
         public async Task<Book> CreateBook(Book book)
         {
+            var existingBook = await _bookDao.GetByIdAsync(book.Isbn);
+            if (existingBook != null) throw new CustomException($"Book with isbn:{book.Isbn} already exists.");
             var dbBook = await _bookDao.AddAsync(book);
             if (dbBook == null)
                 throw new CustomException(System.Net.HttpStatusCode.BadRequest, "Book couldnt be created");
@@ -64,8 +66,13 @@ namespace BookNest.Services
 
         public async Task<Author> GetAuthorById(int id)
         {
-            return await _bookDao.GetAuthorById(id);
-
+            var author = await _bookDao.GetAuthorById(id);
+            if (author == null) throw new NotFoundException($"Author with id:{id} not found");
+            return author;
+        }
+        public async Task<Author> GetAuthorByName(string name)
+        {
+            return await _bookDao.GetAuthorByName(name);
         }
 
         public async Task Delete(string isbn)

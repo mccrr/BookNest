@@ -46,6 +46,11 @@ namespace BookNest.Services
             return review;
         }
 
+        public async Task<double> GetRating(string isbn)
+        {
+            return await _reviewDao.GetRating(isbn);
+        }
+
 
         public async Task DeleteById(int id)
         {

@@ -11,7 +11,7 @@ using BookNest.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>
@@ -52,6 +52,7 @@ builder.Services.AddScoped<FriendsDao>();
 builder.Services.AddScoped<FriendsService>();
 builder.Services.AddScoped<AchievementDao>();
 builder.Services.AddScoped<AchievementService>();
+builder.Services.AddScoped<GoogleService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

@@ -12,9 +12,13 @@ namespace BookNest.Controllers
     
     public class BooksController
     {
+        private readonly ReviewService _reviewService;
         private readonly BookService _bookService;
-        public BooksController(BookService bookService) { 
+        private readonly GoogleService _googleService;
+        public BooksController(BookService bookService, GoogleService googleService, ReviewService reviewService) { 
             _bookService = bookService;
+            _googleService = googleService;
+            _reviewService = reviewService;
         }
         [HttpGet]
         public async Task<IBaseResponse> GetBooks(CancellationToken cancellationToken)
@@ -32,11 +36,13 @@ namespace BookNest.Controllers
         [HttpPost]
         public async Task<IBaseResponse> AddBook(AddBookDto bookDto)
         {
-            var book = new Book(bookDto);
+            var book = await _googleService.GetBookInfoAsync(bookDto.Isbn);
             var dbBook = await _bookService.CreateBook(book);
             if (dbBook == null) 
                 return BaseResponse<object>.ErrorResponse(System.Net.HttpStatusCode.BadRequest, "Book couldnt be created.");
-            return BaseResponse<Book>.SuccessResponse(dbBook);
+            var author = await _bookService.GetAuthorById(book.AuthorId);
+            var rating = await _reviewService.GetRating(book.Isbn);
+            return BaseResponse<BookDto>.SuccessResponse(new BookDto(dbBook, author.Name, rating));
         }
 
         [HttpPost("{isbn}")]
@@ -61,3 +67,4 @@ namespace BookNest.Controllers
         }
     }
 }
+

@@ -60,6 +60,14 @@ namespace BookNest.Controllers
             catch (Exception E) { return BaseResponse<object>.ErrorResponse(HttpStatusCode.NotFound, E.Message); }
         }
 
+        [HttpPut]
+        public async Task<IBaseResponse> Update(UpdateUserDto dto)
+        {
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var updatedUser = await userService.UpdateUser(dto, userId);
+            return BaseResponse<UserDto>.SuccessResponse(new UserDto(updatedUser));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IBaseResponse> DeleteUser(int id)
         {

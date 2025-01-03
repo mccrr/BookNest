@@ -40,13 +40,17 @@ namespace BookNest.DataAccess
             await _context.SaveChangesAsync();
         }
 
+        
+
         public async Task<Author> CreateAuthor(Author author)
         {
             var result = await _context.Authors.AddAsync(author);
             _context.SaveChanges();
             return result.Entity;
         }
-
-        
+        public async Task<Author> GetAuthorById(int id)
+        {
+            return await _context.Authors.FirstOrDefaultAsync(a =>a.Id == id);
+        }
     }
 }

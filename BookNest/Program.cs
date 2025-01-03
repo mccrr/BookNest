@@ -30,11 +30,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseMySql(
-    builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(8, 0, 40))
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 40)),
+        mysqlOptions => mysqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5, // Number of retry attempts
+            maxRetryDelay: TimeSpan.FromSeconds(10), // Max delay between retries
+            errorNumbersToAdd: null // Specific error codes to retry on, or null to retry on all transient errors
+        )
     )
 );
+
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UserDao>();
 builder.Services.AddScoped<UserService>();

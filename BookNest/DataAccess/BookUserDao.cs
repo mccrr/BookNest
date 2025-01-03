@@ -20,14 +20,13 @@ namespace BookNest.DataAccess
 
         public async Task<BookUser> FindByKey(int userId, string isbn, int progress)
         {
-            var result = await _context.BookUsers
+            return await _context.BookUsers
                 .Where(bu => bu.UserId == userId && bu.BookId == isbn)
                 .OrderByDescending(bu => bu.Progress)
                 .FirstOrDefaultAsync();
-            return result;
         }
 
-        public async Task<List<BookUser>> GetByUser(int userId)
+        public async Task<List<BookUser>> GetAllByUser(int userId)
         {
             var result = await _context.BookUsers
                 .Where(bu => bu.UserId == userId)
@@ -36,7 +35,18 @@ namespace BookNest.DataAccess
             return result;
         }
 
-        public async Task<List<BookUser>> GetMax(int userId)
+        public async Task<List<BookUser>> GetByStatus(int userId, string status)
+        {
+            return await _context.BookUsers
+                .Where(bu => bu.UserId == userId && bu.Status == status)
+                .GroupBy(bu => bu.BookId)
+                .Select(group => group
+                .OrderByDescending(bu => bu.Progress)
+                .FirstOrDefault())
+                .ToListAsync();
+        }
+
+        public async Task<List<BookUser>> GetByUser(int userId)
         {
             return await _context.BookUsers
                 .Where(bu => bu.UserId == userId)

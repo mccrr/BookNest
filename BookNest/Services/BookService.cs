@@ -8,13 +8,24 @@ namespace BookNest.Services
     public class BookService
     {
         private readonly BookDao _bookDao;
-        public BookService(BookDao bookDao) {
-            _bookDao = bookDao;        
+        private readonly ReviewDao _reviewDao;
+        public BookService(BookDao bookDao, ReviewDao reviewDao) {
+            _bookDao = bookDao;
+            _reviewDao = reviewDao;
         }
 
-        public async Task<List<Book>> GetBooks(CancellationToken cancellationToken)
+        public async Task<List<BookDto>> GetBooks(CancellationToken cancellationToken)
         {
-            return await _bookDao.GetBooksAsync(cancellationToken);
+            var bookList = await _bookDao.GetBooksAsync(cancellationToken);
+            var dtoList = new List<BookDto>();
+            foreach(var book in bookList)
+            {
+                var author = await GetAuthorById(book.AuthorId);
+                var rating = await _reviewDao.GetRating(book.Isbn);
+                var responseDto = new BookDto(book, author.Name, rating);
+                dtoList.Add(responseDto);
+            }
+            return dtoList;
         }
 
         public async Task<Book> GetById(string isbn)
@@ -49,6 +60,12 @@ namespace BookNest.Services
             var author = new Author(name);
             var dbAuthor = await _bookDao.CreateAuthor(author);
             return dbAuthor;
+        }
+
+        public async Task<Author> GetAuthorById(int id)
+        {
+            return await _bookDao.GetAuthorById(id);
+
         }
 
         public async Task Delete(string isbn)

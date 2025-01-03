@@ -20,7 +20,7 @@ namespace BookNest.Controllers
         public async Task<IBaseResponse> GetBooks(CancellationToken cancellationToken)
         {
             var result = await _bookService.GetBooks(cancellationToken);
-            return BaseResponse<List<Book>>.SuccessResponse(result);
+            return BaseResponse<List<BookDto>>.SuccessResponse(result);
         }
 
         [HttpGet("{id}")]

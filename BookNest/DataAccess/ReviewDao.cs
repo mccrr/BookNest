@@ -43,5 +43,19 @@ namespace BookNest.DataAccess
             await _context.SaveChangesAsync();
         }
 
+
+        public async Task<double> GetRating(string id)
+        {
+            var ratings = _context.Reviews.Where(b => b.BookId == id);
+
+            if (!ratings.Any())
+            {
+                return 0.0;
+            }
+            return _context.Reviews
+                .Where(b => b.BookId == id)
+                .Average(r => r.Rating);
+        }
+
     }
 }

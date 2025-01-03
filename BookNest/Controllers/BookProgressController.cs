@@ -25,20 +25,20 @@ namespace BookNest.Controllers
         }
 
         [HttpGet]
-        public async Task<IBaseResponse> GetByUser()
+        public async Task<IBaseResponse> GetMyBooks()
         {
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var progressList = await _bookProgressService.GetByUser(userId);
-            return BaseResponse<List<BookUser>>.SuccessResponse(progressList);
+            var myBooks = await _bookProgressService.GetMyBooks(userId);
+            return BaseResponse<MyBooksResponseDto>.SuccessResponse(myBooks);
         }
 
-        [HttpGet("max")]
-        public async Task<IBaseResponse> GetMax()
-        {
-            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var progressList = await _bookProgressService.GetMax(userId);
-            return BaseResponse<List<BookUser>>.SuccessResponse(progressList);
-        }
+        //[HttpGet("max")]
+        //public async Task<IBaseResponse> GetMax()
+        //{
+        //    var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        //    var progressList = await _bookProgressService.GetMax(userId);
+        //    return BaseResponse<List<BookUser>>.SuccessResponse(progressList);
+        //}
 
 }
 }

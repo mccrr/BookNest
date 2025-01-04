@@ -37,7 +37,7 @@ namespace BookNest.Models.Entities
         public string Cover { get; set; }
 
         [Required]
-        [MaxLength(1000)]
+        [MaxLength(2000)]
         public string Description { get; set; }
 
         [Required]

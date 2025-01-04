@@ -34,7 +34,7 @@ namespace BookNest.Dtos.Books
         [MaxLength(2083)]
         public string Cover { get; set; }
         [Required]
-        [MaxLength(1000)]
+        [MaxLength(2000)]
         public string Description { get; set; }
         [Required]
         public string Author { get; set; }

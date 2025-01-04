@@ -21,7 +21,7 @@ namespace BookNest.Models.Entities
         public  string Text { get; set; }
         [Required]
         [Range(0, 10)]
-        public  int Rating { get; set; }
+        public double Rating { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
 

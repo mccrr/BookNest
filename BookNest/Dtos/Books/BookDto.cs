@@ -14,6 +14,10 @@ namespace BookNest.Dtos.Books
             Pages = book.Pages;
             Cover = book.Cover;
             Rating = rating;
+            Publisher = book.Publisher;
+            PublishedDate = book.PublishedDate;
+            Language = book.Language;
+            Category = book.Category;
         }
 
         [Required]
@@ -34,5 +38,15 @@ namespace BookNest.Dtos.Books
         public string Description { get; set; }
         [Required]
         public string Author { get; set; }
+        public string Publisher { get; set; }
+
+        [MaxLength(10)]
+        public DateTime PublishedDate { get; set; }
+
+        [MaxLength(10)]
+        public string Language { get; set; }
+
+        [MaxLength(200)]
+        public string Category { get; set; }
     }
 }

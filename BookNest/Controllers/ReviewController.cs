@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos.Review;
+﻿using BookNest.Dtos.Reviews;
 using BookNest.Models.Entities;
 using BookNest.Services;
 using BookNest.Utils;
@@ -12,38 +12,57 @@ namespace BookNest.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly ReviewService _reviewService;
-        public ReviewController(ReviewService review)
+        private readonly UserService _userService;
+        public ReviewController(ReviewService review, UserService userService)
         {
             _reviewService = review;
+            _userService = userService;
         }
 
         [HttpPost]
         public async Task<IBaseResponse> Create(ReviewDto reviewDto)
         {
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var user = await _userService.GetById(userId);
             var review = await _reviewService.Create(reviewDto, userId);
-            return BaseResponse<Review>.SuccessResponse(review);
+
+            return BaseResponse<ReviewResponseDto>.SuccessResponse(new ReviewResponseDto(review, user));
         }
 
         [HttpGet("id/{id}")]
         public async Task<IBaseResponse> GetById(int id)
         {
             var review = await _reviewService.GetById(id);
-            return BaseResponse<Review>.SuccessResponse(review);
+            var user = await _userService.GetById(id);
+            return BaseResponse<ReviewResponseDto>.SuccessResponse(new ReviewResponseDto(review, user));
         }
 
         [HttpGet("user/{id}")]
         public async Task<IBaseResponse> GetByUser(int id)
         {
             var reviews = await _reviewService.GetByUser(id);
-            return BaseResponse<List<Review>>.SuccessResponse(reviews);
+            var result = new List<ReviewResponseDto>();
+            foreach(Review review in reviews)
+            {
+                var user = await _userService.GetById(review.UserId);
+                var dto = new ReviewResponseDto(review, user);
+                result.Add(dto);
+            }
+            return BaseResponse<List<ReviewResponseDto>>.SuccessResponse(result);
         }
 
         [HttpGet("book/{isbn}")]
         public async Task<IBaseResponse> GetByBook(string isbn)
         {
             var reviews = await _reviewService.GetByBook(isbn);
-            return BaseResponse<List<Review>>.SuccessResponse(reviews);
+            var result = new List<ReviewResponseDto>();
+            foreach (Review review in reviews)
+            {
+                var user = await _userService.GetById(review.UserId);
+                var dto = new ReviewResponseDto(review, user);
+                result.Add(dto);
+            }
+            return BaseResponse<List<ReviewResponseDto>>.SuccessResponse(result);
         }
 
         [HttpDelete("id/{id}")]

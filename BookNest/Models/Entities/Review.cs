@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos.Review;
+﻿using BookNest.Dtos.Reviews;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookNest.Models.Entities
@@ -21,7 +21,7 @@ namespace BookNest.Models.Entities
         public  string Text { get; set; }
         [Required]
         [Range(0, 10)]
-        public double Rating { get; set; }
+        public float Rating { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
 

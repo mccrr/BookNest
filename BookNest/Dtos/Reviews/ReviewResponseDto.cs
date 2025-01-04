@@ -10,7 +10,7 @@ namespace BookNest.Dtos.Reviews
             Id = review.Id;
             Text = review.Text;
             Rating = review.Rating;
-            UserName = user.Username;
+            Username = user.Username;
             Avatar = user.Avatar;
             BookId = review.BookId;
             CreatedAt = review.CreatedAt;
@@ -18,7 +18,7 @@ namespace BookNest.Dtos.Reviews
         public int Id { get; set; }
         public string Text { get; set; }
         public float Rating { get; set; }
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string Avatar { get; set; }
 
         public string BookId { get; set; }

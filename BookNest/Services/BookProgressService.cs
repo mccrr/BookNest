@@ -17,7 +17,7 @@ namespace BookNest.Services
 
         public async Task<BookUserDto> Create(BookUserDto bookUserDto, int userId)
         {
-            await _bookService.GetById(bookUserDto.BookId);
+            await _bookService.GetById(bookUserDto.BookId, false);
             bookUserDto.Status = bookUserDto.Status.ToLower();
             if (bookUserDto.Status.ToLower().Equals("read") && bookUserDto.Progress != 100)
                 throw new CustomException("Book status says 'read' but progress is not maximum!");
@@ -80,7 +80,8 @@ namespace BookNest.Services
             var responseDto = new MyBooksResponseDto();
             foreach (var mybook in mybooksList)
             {
-                var book = await _bookService.GetById(mybook.BookId);
+                var book = await _bookService.GetById(mybook.BookId, false);
+                if (book is null) continue;
                 var dto = new MyBooksDto(mybook, book.Cover,book.Title);
                 if (dto.Status.ToLower().Equals("read")) responseDto.Read.Add(dto);
                 else if (dto.Status.ToLower().Equals("reading") && !readList.Any(x => x.BookId == dto.BookId))

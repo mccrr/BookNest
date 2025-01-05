@@ -28,10 +28,10 @@ namespace BookNest.Services
             return dtoList;
         }
 
-        public async Task<Book> GetById(string isbn)
+        public async Task<Book> GetById(string isbn, bool throwError)
         {
             var book = await _bookDao.GetByIdAsync(isbn);
-            if(book == null) throw new NotFoundException($"Book with isbn: {isbn} doesnt exist in our database.");
+            if(book == null && throwError) throw new NotFoundException($"Book with isbn: {isbn} doesnt exist in our database.");
             return book;
         }
 
@@ -47,7 +47,7 @@ namespace BookNest.Services
 
         public async Task<Book> Update(string isbn, UpdateBookDto bookDto)
         {
-            var book = await GetById(isbn);
+            var book = await GetById(isbn,true);
             if(bookDto.Title!=null) book.Title = bookDto.Title;
             //if (bookDto.Pages != null) book.Pages = bookDto.Pages;
             if (bookDto.Description != null) book.Description= bookDto.Description;
@@ -77,7 +77,7 @@ namespace BookNest.Services
 
         public async Task Delete(string isbn)
         {
-            var book = await GetById(isbn);
+            var book = await GetById(isbn,true);
             await _bookDao.DeleteAsync(book);
         }
     }

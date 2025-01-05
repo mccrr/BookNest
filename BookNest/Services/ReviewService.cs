@@ -33,7 +33,7 @@ namespace BookNest.Services
 
         public async Task<List<Review>> GetByBook(string isbn)
         {
-            await _bookService.GetById(isbn);
+            await _bookService.GetById(isbn, true);
             var reviews = await _reviewDao.GetByBook(isbn);
             if (reviews == null) throw new CustomException("Internal Server Error!");
             return reviews;

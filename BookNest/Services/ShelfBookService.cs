@@ -19,7 +19,7 @@ namespace BookNest.Services
 
         public async Task<ShelfBook> Add(string isbn, int shelfId)
         {
-            var dbBook = await _bookService.GetById(isbn);
+            var dbBook = await _bookService.GetById(isbn, true);
             var dbShelf = await _shelfService.GetById(shelfId);
 
             var shelfBook = new ShelfBook(isbn,shelfId);
@@ -38,7 +38,7 @@ namespace BookNest.Services
 
         public async Task Remove(string isbn, int shelfId)
         {
-            var dbBook = await (_bookService.GetById(isbn));
+            var dbBook = await _bookService.GetById(isbn, true);
             var dbShelf = await _shelfService.GetById(shelfId);
             var shelfBook = await GetByKey(isbn, shelfId);
             await _shelfBookDao.Remove(shelfBook);

@@ -36,6 +36,8 @@ namespace BookNest.Controllers
         [HttpPost]
         public async Task<IBaseResponse> AddBook(AddBookDto bookDto)
         {
+            var existingBook = await _bookService.GetById(bookDto.Isbn);
+            if (existingBook != null) return BaseResponse<object>.ErrorResponse(System.Net.HttpStatusCode.OK, "Book already exists");
             var book = await _googleService.GetBookInfoAsync(bookDto.Isbn);
             var dbBook = await _bookService.CreateBook(book);
             if (dbBook == null) 

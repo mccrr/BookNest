@@ -21,22 +21,49 @@ namespace BookNest.Services
             bookUserDto.Status = bookUserDto.Status.ToLower();
             if (bookUserDto.Status.ToLower().Equals("read") && bookUserDto.Progress != 100)
                 throw new CustomException("Book status says 'read' but progress is not maximum!");
+
             if (bookUserDto.Status.ToLower().Equals("wanttoread") && bookUserDto.Progress != 0)
                 throw new CustomException("Book status says 'wantoread' but progress is not 0");
             var dbBookUser = await _bookUserDao.FindByKey(userId,bookUserDto.BookId,bookUserDto.Progress);
+
             if (dbBookUser != null)
             {
-                Console.WriteLine($"dbBookUser Progress: {dbBookUser.Progress}");
-                if (dbBookUser.Progress == bookUserDto.Progress) throw new CustomException("Progress has already been submitted");
-                else if (dbBookUser.Progress > bookUserDto.Progress)
-                    throw new CustomException("New progress is lower than previously submitted progress");
+                if (dbBookUser.Status == "reading")
+                {
+                    Console.WriteLine($"dbBookUser Progress: {dbBookUser.Progress}");
+                    if (dbBookUser.Progress == bookUserDto.Progress) throw new CustomException("Progress has already been submitted");
+                    else if (dbBookUser.Progress > bookUserDto.Progress)
+                        throw new CustomException("New progress is lower than previously submitted progress");
+                }
+                else throw new CustomException("Progress has already been submitted");
             }
-            if (!(bookUserDto.Status.ToLower().Equals("read") || bookUserDto.Status.ToLower().Equals("wanttoread")
-                || bookUserDto.Status.ToLower().Equals("reading")))
-                throw new CustomException("Invalid status");
+
             var bookUser = new BookUser(bookUserDto,userId);
             var newDbBookUser = await _bookUserDao.Add(bookUser);
             if (newDbBookUser == null) throw new CustomException("Book progress couldnt be added!");
+
+            if (!(bookUserDto.Status.ToLower().Equals("read") || bookUserDto.Status.ToLower().Equals("wanttoread")
+                || bookUserDto.Status.ToLower().Equals("reading")))
+                throw new CustomException("Invalid status");
+
+            if (bookUserDto.Status == "wanttoread")
+            {
+                var existingReadingList = await _bookUserDao.GetAllReading(userId, bookUserDto.BookId);
+                Console.WriteLine("ExistingReadingList: ", existingReadingList);
+                if (existingReadingList != null)
+                {
+                    foreach (var exReading in existingReadingList)
+                    {
+                        await _bookUserDao.Delete(exReading);
+                    }
+                }
+            }
+            if (bookUserDto.Status == "wanttoread" || bookUserDto.Status == "reading")
+            {
+                var existingRead = await _bookUserDao.GetBookStatus(userId, bookUserDto.BookId, "read");
+                if (existingRead != null) await _bookUserDao.Delete(existingRead);
+            }
+
             return new BookUserDto(newDbBookUser);
         }
 
@@ -48,14 +75,19 @@ namespace BookNest.Services
         public async Task<MyBooksResponseDto> GetMyBooks(int userId)
         {
             var mybooksList = await _bookUserDao.GetByUser(userId);
+            var readList = mybooksList.Where(x => x.Status == "read");
+            var readingList = mybooksList.Where(x => x.Status == "reading");
             var responseDto = new MyBooksResponseDto();
             foreach (var mybook in mybooksList)
             {
                 var book = await _bookService.GetById(mybook.BookId);
                 var dto = new MyBooksDto(mybook, book.Cover,book.Title);
-                if (dto.Status.ToLower().Equals("reading")) responseDto.Reading.Add(dto);
-                else if (dto.Status.ToLower().Equals("read")) responseDto.Read.Add(dto);
-                else responseDto.WantToRead.Add(dto);
+                if (dto.Status.ToLower().Equals("read")) responseDto.Read.Add(dto);
+                else if (dto.Status.ToLower().Equals("reading") && !readList.Any(x => x.BookId == dto.BookId))
+                    responseDto.Reading.Add(dto);  
+                else if (dto.Status.ToLower().Equals("wanttoread") && !readList.Any(x => x.BookId == dto.BookId)
+                    && !readingList.Any(x => x.BookId == dto.BookId)) 
+                    responseDto.WantToRead.Add(dto); 
             }
             return responseDto;
         }

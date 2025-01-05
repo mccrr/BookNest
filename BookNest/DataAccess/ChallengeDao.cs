@@ -31,12 +31,13 @@ namespace BookNest.DataAccess
                 .ToList();
         }
 
-        public async Task<Challenge> Update(int id)
+        public async Task<Challenge> Update(int id, bool isCompleted)
         {
             var challenge = await _context.Challenges.FirstOrDefaultAsync(c => c.Id.Equals(id));
-            challenge.IsCompleted=true;
+            challenge.IsCompleted= isCompleted;
             await _context.SaveChangesAsync();
             return challenge;
         }
+
     }
 }

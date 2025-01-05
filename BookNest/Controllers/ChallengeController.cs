@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos.Challenge;
+﻿using BookNest.Dtos.ChallengeDtos;
 using BookNest.Models.Entities;
 using BookNest.Services;
 using BookNest.Utils;
@@ -33,7 +33,14 @@ namespace BookNest.Controllers
 
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var challenge = await _challengeService.GetById(id, userId);
-            return BaseResponse<Challenge>.SuccessResponse(challenge);
+            int progress;
+            if (challenge.Type == "pages")
+                progress = await _challengeService.GetPagesBetweenDates(userId, id, challenge.StartedAt, challenge.EndsAt);
+            else
+                progress = await _challengeService.GetBooksBetweenDates(userId, id, challenge.StartedAt, challenge.EndsAt);
+            var response = new ChallengeResponseDto(challenge, progress);
+            await _challengeService.Update(id, userId, response.IsCompleted);
+            return BaseResponse<ChallengeResponseDto>.SuccessResponse(response);        
         }
 
         [HttpPost]
@@ -45,12 +52,13 @@ namespace BookNest.Controllers
         }
 
         //TODO: Update the logic of progress
-        [HttpPut("{id}")]
-        public async Task<IBaseResponse> Update(int id) {
-            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var updated = await _challengeService.Update(id,userId);
-            return BaseResponse<Challenge>.SuccessResponse(updated);
-        }
+        //[HttpPut("{id}")]
+        //public async Task<IBaseResponse> Update(int id) {
+        //    var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        //    var challenge = await GetChallengeById(id);
+        //    var updated = await _challengeService.Update(id,userId,);
+        //    return BaseResponse<Challenge>.SuccessResponse(updated);
+        //}
 
     }
 }

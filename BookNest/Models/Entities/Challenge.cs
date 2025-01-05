@@ -1,4 +1,4 @@
-﻿using BookNest.Dtos.Challenge;
+﻿using BookNest.Dtos.ChallengeDtos;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookNest.Models.Entities

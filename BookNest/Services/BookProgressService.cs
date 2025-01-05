@@ -93,6 +93,16 @@ namespace BookNest.Services
             return responseDto;
         }
 
+        public async Task RemoveMyBook(int userId, string isbn)
+        {
+            var progressList = await _bookUserDao.GetAllByUserAndBook(userId, isbn);
+            foreach (var progress in progressList)
+            {
+                Console.WriteLine($"{progress.UserId} - ", progress.BookId);
+                await _bookUserDao.Delete(progress);
+            }
+        }
+
         //public async Task<List<BookUser>> GetMax(int userId)
         //{
         //    var progressList = await _bookUserDao.GetMax(userId);

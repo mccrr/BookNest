@@ -32,6 +32,14 @@ namespace BookNest.Controllers
             return BaseResponse<MyBooksResponseDto>.SuccessResponse(myBooks);
         }
 
+        [HttpDelete("{isbn}")]
+        public async Task<IBaseResponse> RemoveMyBook(string isbn)
+        {
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            await _bookProgressService.RemoveMyBook(userId, isbn);
+            return BaseResponse<object>.SuccessResponse(null);
+        }
+
         //[HttpGet("max")]
         //public async Task<IBaseResponse> GetMax()
         //{
@@ -40,5 +48,5 @@ namespace BookNest.Controllers
         //    return BaseResponse<List<BookUser>>.SuccessResponse(progressList);
         //}
 
-}
+    }
 }

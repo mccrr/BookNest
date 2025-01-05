@@ -1,7 +1,7 @@
 ﻿using BookNest.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookNest.Dtos.Challenge
+namespace BookNest.Dtos.ChallengeDtos
 {
     public class ChallengeDto
     {

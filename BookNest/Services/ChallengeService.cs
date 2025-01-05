@@ -1,5 +1,6 @@
 ﻿using BookNest.DataAccess;
-using BookNest.Dtos.Challenge;
+using BookNest.Dtos.ChallengeDtos;
+using BookNest.Dtos.ChallengeDtos;
 using BookNest.Models.Entities;
 using BookNest.Utils;
 
@@ -8,9 +9,11 @@ namespace BookNest.Services
     public class ChallengeService
     {
         private readonly ChallengeDao _challengeDao;
-        public ChallengeService(ChallengeDao challengeDao)
+        private readonly BookUserDao _bookUserDao;
+        public ChallengeService(ChallengeDao challengeDao, BookUserDao bookUserDao)
         {
             _challengeDao = challengeDao;
+            _bookUserDao = bookUserDao;
         }
 
         public async Task<List<Challenge>> GetByUser(int userId)
@@ -38,11 +41,25 @@ namespace BookNest.Services
             return challenge;
         }
 
-        public async Task<Challenge> Update(int id, int userId)
+        public async Task<Challenge> Update(int id, int userId, bool completed)
         {
             var challenge = await GetById(id, userId);
-            var dbChallenge = await _challengeDao.Update(challenge.Id);
-            return challenge;
+            var dbChallenge = await _challengeDao.Update(id, completed);
+            return dbChallenge;
+        }
+
+        public async Task<int> GetPagesBetweenDates(int userId,int challengeId, DateTime startDate, DateTime endDate)
+        {
+            var challenge = await _challengeDao.GetById(challengeId);
+            var pages = await _bookUserDao.GetPagesBetweenDates(userId, challenge.StartedAt, challenge.EndsAt);
+            return pages;
+        }
+
+        public async Task<int> GetBooksBetweenDates(int userId, int challengeId, DateTime startDate, DateTime endDate)
+        {
+            var challenge = await _challengeDao.GetById(challengeId);
+            var books = await _bookUserDao.GetBooksBetweenDates(userId, challenge.StartedAt, challenge.EndsAt);
+            return books;
         }
     }
 }

@@ -17,14 +17,14 @@ namespace BookNest.Services
 
         public async Task<BookUserDto> Create(BookUserDto bookUserDto, int userId)
         {
-            await _bookService.GetById(bookUserDto.BookId, false);
+            await _bookService.GetById(bookUserDto.BookId, true);
             bookUserDto.Status = bookUserDto.Status.ToLower();
             if (bookUserDto.Status.ToLower().Equals("read") && bookUserDto.Progress != 100)
                 throw new CustomException("Book status says 'read' but progress is not maximum!");
 
             if (bookUserDto.Status.ToLower().Equals("wanttoread") && bookUserDto.Progress != 0)
                 throw new CustomException("Book status says 'wantoread' but progress is not 0");
-            var dbBookUser = await _bookUserDao.FindByKey(userId,bookUserDto.BookId,bookUserDto.Progress);
+            var dbBookUser = await _bookUserDao.FindByKey(userId,bookUserDto.BookId);
 
             if (dbBookUser != null)
             {

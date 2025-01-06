@@ -18,10 +18,11 @@ namespace BookNest.DataAccess
             return result.Entity;
         }
 
-        public async Task<BookUser> FindByKey(int userId, string isbn, int progress)
+        public async Task<BookUser> FindByKey(int userId, string isbn)
         {
             return await _context.BookUsers
-                .Where(bu => bu.UserId == userId && bu.BookId == isbn && bu.Progress == progress)
+                .Where(bu => bu.UserId == userId && bu.BookId == isbn)
+                .OrderByDescending(x=>x.Progress)
                 .FirstOrDefaultAsync();
         }
 

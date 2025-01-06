@@ -26,9 +26,9 @@ namespace BookNest.DataAccess
 
         public async Task<List<Challenge>> GetByUser(int userId)
         {
-            return _context.Challenges
+            return await _context.Challenges
                 .Where(c => c.UserId == userId)
-                .ToList();
+                .ToListAsync();
         }
 
         public async Task<Challenge> Update(int id, bool isCompleted)

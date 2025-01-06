@@ -23,13 +23,13 @@ namespace BookNest.DataAccess
         public async Task<List<Review>> GetByUser(int userId)
         {
             var result = _context.Reviews.Where(r => r.UserId == userId);
-            return result.ToList();
+            return await result.ToListAsync();
         }
 
         public async Task<List<Review>> GetByBook(string isbn)
         {
             var result = _context.Reviews.Where(r => r.BookId == isbn);
-            return result.ToList();
+            return await result.ToListAsync();
         }
 
         public async Task<Review> GetById(int id)

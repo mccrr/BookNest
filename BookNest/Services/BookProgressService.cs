@@ -30,7 +30,6 @@ namespace BookNest.Services
             {
                 if (dbBookUser.Status == "reading")
                 {
-                    Console.WriteLine($"dbBookUser Progress: {dbBookUser.Progress}");
                     if (dbBookUser.Progress == bookUserDto.Progress) throw new CustomException("Progress has already been submitted");
                     else if (dbBookUser.Progress > bookUserDto.Progress)
                         throw new CustomException("New progress is lower than previously submitted progress");
@@ -49,7 +48,6 @@ namespace BookNest.Services
             if (bookUserDto.Status == "wanttoread")
             {
                 var existingReadingList = await _bookUserDao.GetAllReading(userId, bookUserDto.BookId);
-                Console.WriteLine("ExistingReadingList: ", existingReadingList);
                 if (existingReadingList != null)
                 {
                     foreach (var exReading in existingReadingList)
@@ -98,7 +96,6 @@ namespace BookNest.Services
             var progressList = await _bookUserDao.GetAllByUserAndBook(userId, isbn);
             foreach (var progress in progressList)
             {
-                Console.WriteLine($"{progress.UserId} - ", progress.BookId);
                 await _bookUserDao.Delete(progress);
             }
         }

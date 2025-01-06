@@ -58,6 +58,12 @@ namespace BookNest.Services
                 var newAuthor = await _bookService.AddAuthor(authorName);
                 author = newAuthor;
             }
+            var cover = volumeInfo.GetProperty("imageLinks").GetProperty("thumbnail").GetString();
+            if (cover.StartsWith("http://"))
+            {
+                cover = "https://" + cover.Substring(7); // Replace "http://" with "https://"
+            };
+            Console.WriteLine($"Cover: {cover}");
 
             // Map to the Book class
             var book = new Book
@@ -70,7 +76,7 @@ namespace BookNest.Services
                 Description = volumeInfo.GetProperty("description").GetString(),
                 Pages = volumeInfo.GetProperty("pageCount").GetInt32(),
                 Category = volumeInfo.GetProperty("categories").EnumerateArray().FirstOrDefault().GetString() ?? "Unknown",
-                Cover = volumeInfo.GetProperty("imageLinks").GetProperty("thumbnail").GetString(),
+                Cover = cover,
                 Language = volumeInfo.GetProperty("language").GetString()
             };
 

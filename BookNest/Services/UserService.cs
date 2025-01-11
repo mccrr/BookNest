@@ -19,7 +19,9 @@ namespace BookNest.Services
 
         public async Task<User> GetById(int id)
         {
-            return await userDao.GetByIdAsync(id);
+            var user = await userDao.GetByIdAsync(id);
+            if (user == null) throw new NotFoundException("User doesnt exist.");
+            return user;
         }
 
         public async Task<User> GetByEmail(string email)

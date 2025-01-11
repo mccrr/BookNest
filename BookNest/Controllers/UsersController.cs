@@ -13,35 +13,48 @@ namespace BookNest.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserService userService;
-        public UsersController(UserService userService) {
-            this.userService = userService;
+        private readonly UserService _userService;
+        private readonly FriendsService _friendsService;
+        private readonly BookProgressService _bookProgressService;
+        public UsersController(UserService userService, FriendsService friendsService = null, BookProgressService bookProgressService = null)
+        {
+            _userService = userService;
+            _friendsService = friendsService;
+            _bookProgressService = bookProgressService;
         }
 
         [HttpGet]
         public async Task<IBaseResponse> GetUsers(CancellationToken cancellationToken)
         {
-            try
-            {
-                var result = await userService.GetUsers(cancellationToken);
+                var result = await _userService.GetUsers(cancellationToken);
                 return BaseResponse<List<User>>.SuccessResponse(result);
-            } catch (Exception E)
-            {
-                return BaseResponse<object>.ErrorResponse(HttpStatusCode.InternalServerError, E.Message);
-            }
         }
-        [HttpGet("id/{id}")]
-        public async Task<IBaseResponse> GetUserById(int id)
+        [HttpGet("id/{friendId}")]
+        public async Task<IBaseResponse> GetUserById(int friendId)
         {
-            try { 
-            var result = await userService.GetById(id);
-            if (result == null) return BaseResponse<object>.ErrorResponse(HttpStatusCode.NotFound,"User Not Found");
-            return BaseResponse<object>.SuccessResponse(new { result.Username, result.Age,result.FirstName,result.LastName });
-            } catch(Exception E)
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var result = await _userService.GetById(friendId);
+            var friendResult = await _friendsService.GetFriend(userId, friendId,false);
+            var isFriend = (friendResult != null);
+            var pendingSentRequest = false;
+            var pendingReceivedRequest = false;
+            if (!isFriend)
             {
-                return BaseResponse<object>.ErrorResponse(HttpStatusCode.InternalServerError, E.Message);
+                var sentRequest = await _friendsService.GetRequestByKey(userId,friendId,false);
+                if (sentRequest != null)
+                    pendingSentRequest = true;
+                else
+                {
+                    var receivedRequest = await _friendsService.GetRequestByKey(friendId, userId,false);
+                    if(receivedRequest != null) pendingReceivedRequest = true;
+                }
             }
+            var bookProgressResponse = await _bookProgressService.GetMyBooks(friendId);
+            return BaseResponse<object>.SuccessResponse(
+                new UserDto(result,pendingSentRequest,pendingReceivedRequest,isFriend,bookProgressResponse));
         }
+
+
         [HttpGet("profile")]
         public async Task<IBaseResponse> GetProfile()
         {
@@ -51,27 +64,23 @@ namespace BookNest.Controllers
             if (claim == null)
                 return BaseResponse<object>.ErrorResponse(HttpStatusCode.Unauthorized, "Claims were not found");
             int.TryParse(claim.Value, out int userId);
-            try
-            {
-                var result = await userService.GetById(userId);
+                var result = await _userService.GetById(userId);
                 if (result == null) return BaseResponse<object>.ErrorResponse(HttpStatusCode.NotFound, "User Not Found");
                 return BaseResponse<object>.SuccessResponse(new ProfileDto(result));
-            }
-            catch (Exception E) { return BaseResponse<object>.ErrorResponse(HttpStatusCode.NotFound, E.Message); }
         }
 
         [HttpPut]
         public async Task<IBaseResponse> Update(UpdateUserDto dto)
         {
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var updatedUser = await userService.UpdateUser(dto, userId);
-            return BaseResponse<UserDto>.SuccessResponse(new UserDto(updatedUser));
+            var updatedUser = await _userService.UpdateUser(dto, userId);
+            return BaseResponse<ProfileDto>.SuccessResponse(new ProfileDto(updatedUser));
         }
 
         [HttpDelete("{id}")]
         public async Task<IBaseResponse> DeleteUser(int id)
         {
-            await userService.DeleteUser(id);
+            await _userService.DeleteUser(id);
             return BaseResponse<object>.SuccessResponse(null);
         }
 

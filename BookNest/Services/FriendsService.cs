@@ -40,32 +40,37 @@ namespace BookNest.Services
 
         public async Task RemoveRequest(int sender, int receiver)
         {
-            var request = await GetRequestByKey(sender, receiver);
+            var request = await GetRequestByKey(sender, receiver, true);
             await _friendsDao.DeleteRequest(request);
         }
         public async Task RemoveFriend(int sender, int receiver)
         {
-            var friendship = await GetFriend(sender, receiver);
+            var friendship = await GetFriend(sender, receiver,true);
             await _friendsDao.RemoveFriend(friendship);
         }
-        public async Task<FriendRequest> GetRequestByKey(int sender, int receiver)
+        public async Task<FriendRequest> GetRequestByKey(int sender, int receiver, bool throwError)
         {
             var request = await _friendsDao.GetRequestByKey(sender, receiver);
-            if (request == null) throw new NotFoundException("Friend Request not found.");
+            if (request == null && throwError)
+                    throw new NotFoundException("Friend Request not found.");
             return request;
         }
 
-        public async Task<Friend> GetFriend(int sender, int receiver)
+        public async Task<Friend> GetFriend(int sender, int receiver, bool throwError)
         {
             var request = await _friendsDao.GetFriend(sender, receiver);
-            if (request == null) throw new NotFoundException("Friend not found.");
+            if (request == null)
+            {
+                if (throwError)
+                    throw new NotFoundException("Friend not found.");
+            }
             return request;
         }
 
         public async Task<Friend?> SendResponse(FRequestResponseDto dto,int userId)
         {
             Console.WriteLine($"SenderId: {dto.SenderId}\nReceiverId: {userId}");
-            var request = await GetRequestByKey(dto.SenderId, userId);
+            var request = await GetRequestByKey(dto.SenderId, userId, false);
             if (dto.Response == false) return null;
             
             await _friendsDao.DeleteRequest(request);

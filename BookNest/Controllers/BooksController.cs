@@ -31,7 +31,10 @@ namespace BookNest.Controllers
         public async Task<IBaseResponse> GetBookById(string id)
         {
             var book = await _bookService.GetById(id, true);
-            return BaseResponse<Book>.SuccessResponse(book);
+            var author = await _bookService.GetAuthorById(book.AuthorId);
+            var rating = await _reviewService.GetRating(book.Isbn);
+            var responseDto = new BookDto(book, author.Name, rating);
+            return BaseResponse<BookDto>.SuccessResponse(responseDto);
         }
         [HttpPost]
         public async Task<IBaseResponse> AddBook(AddBookDto bookDto)

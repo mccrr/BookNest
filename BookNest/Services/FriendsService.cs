@@ -18,17 +18,41 @@ namespace BookNest.Services
             _notificationService = notificationService;
         }
 
-
-        public async Task<List<FriendRequestDto>> GetSentRequestsByUser(int userId)
+        public async Task<List<int>> GetAllFriends(int userId)
         {
-            var result = await _friendsDao.GetSentRequestByUser(userId);
-            return result.Select(x => new FriendRequestDto(x)).ToList();
+            var friendsIdList = new List<int>();
+            var result = await _friendsDao.GetAllFriends(userId);
+            foreach (var friend in result) {
+                if (friend.UserId == userId) friendsIdList.Add(friend.FriendId);
+                else friendsIdList.Add(friend.UserId);
+            }
+            return friendsIdList;
         }
 
-        public async Task<List<FriendRequestDto>> GetReceivedRequestsByUser(int userId)
+
+        public async Task<List<FriendRequestResponseDto>> GetSentRequestsByUser(int userId)
+        {
+            var result = await _friendsDao.GetSentRequestByUser(userId);
+            var responseList = new List<FriendRequestResponseDto>();
+            var dbFriend = new User();
+            foreach (var friend in result) { 
+                dbFriend = await _userService.GetById(friend.ReceiverId);
+                responseList.Add(new FriendRequestResponseDto(friend, dbFriend.Username, dbFriend.Avatar));
+            }
+            return responseList;
+        }
+
+        public async Task<List<FriendRequestResponseDto>> GetReceivedRequestsByUser(int userId)
         {
             var result = await _friendsDao.GetReceivedRequestByUser(userId);
-            return result.Select(x => new FriendRequestDto(x)).ToList();
+            var responseList = new List<FriendRequestResponseDto>();
+            var dbFriend = new User();
+            foreach (var friend in result)
+            {
+                dbFriend = await _userService.GetById(friend.SenderId);
+                responseList.Add(new FriendRequestResponseDto(friend, dbFriend.Username, dbFriend.Avatar));
+            }
+            return responseList;
         }
         public async Task<FriendRequest> SendRequest(int userId, int friendId)
         {

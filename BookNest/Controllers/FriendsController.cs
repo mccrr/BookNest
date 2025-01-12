@@ -43,7 +43,7 @@ namespace BookNest.Controllers
         {
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var requests = await _friendsService.GetSentRequestsByUser(userId);
-            return BaseResponse<List<FriendRequestDto>>.SuccessResponse(requests);
+            return BaseResponse<List<FriendRequestResponseDto>>.SuccessResponse(requests);
         }
 
         [HttpGet("requests/received")]
@@ -51,7 +51,7 @@ namespace BookNest.Controllers
         {
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var requests = await _friendsService.GetReceivedRequestsByUser(userId);
-            return BaseResponse<List<FriendRequestDto>>.SuccessResponse(requests);
+            return BaseResponse<List<FriendRequestResponseDto>>.SuccessResponse(requests);
         }
 
         [HttpDelete("requests/{friendId}")]
@@ -68,6 +68,14 @@ namespace BookNest.Controllers
             var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _friendsService.RemoveFriend(userId,friendId);
             return BaseResponse<object>.SuccessResponse(null);
+        }
+
+        [HttpGet]
+        public async Task<IBaseResponse> GetFriends()
+        {
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var friends = await _friendsService.GetAllFriends(userId);
+            return BaseResponse<List<int>>.SuccessResponse(friends);
         }
 
     }

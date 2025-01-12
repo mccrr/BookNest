@@ -60,6 +60,8 @@ builder.Services.AddScoped<FriendsDao>();
 builder.Services.AddScoped<FriendsService>();
 builder.Services.AddScoped<AchievementDao>();
 builder.Services.AddScoped<AchievementService>();
+builder.Services.AddScoped<NotificationDao>();
+builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<GoogleService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

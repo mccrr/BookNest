@@ -1,5 +1,6 @@
 ﻿using BookNest.DataAccess;
 using BookNest.Dtos.Friends;
+using BookNest.Dtos.Notifications;
 using BookNest.Models.Entities;
 using BookNest.Utils;
 
@@ -9,10 +10,12 @@ namespace BookNest.Services
     {
         private readonly FriendsDao _friendsDao;
         private readonly UserService _userService;
-        public FriendsService(FriendsDao friendsDao, UserService userService)
+        private readonly NotificationService _notificationService;
+        public FriendsService(FriendsDao friendsDao, UserService userService, NotificationService notificationService)
         {
             _friendsDao = friendsDao;
             _userService = userService;
+            _notificationService = notificationService;
         }
 
 
@@ -67,15 +70,26 @@ namespace BookNest.Services
             return request;
         }
 
-        public async Task<Friend?> SendResponse(FRequestResponseDto dto,int userId)
+        public async Task<Friend?> SendResponse(FRequestResponseDto dto, int userId)
         {
             Console.WriteLine($"SenderId: {dto.SenderId}\nReceiverId: {userId}");
             var request = await GetRequestByKey(dto.SenderId, userId, false);
-            if (dto.Response == false) return null;
-            
+            if (dto.Response == false)
+            {
+                await _friendsDao.DeleteRequest(request);
+                return null;
+            }
+
             await _friendsDao.DeleteRequest(request);
             var friend = new Friend(dto.SenderId, userId);
-            return await _friendsDao.AddFriend(friend);
+            var createdFriends = await _friendsDao.AddFriend(friend);
+            if (createdFriends != null)
+            {
+                var newNotifdto = new NotificationDto(userId, dto.SenderId, null, "friends", "You are now friends");
+                var newNotif = await _notificationService.Create(newNotifdto);
+                Console.WriteLine($"New Notif: {newNotif.Id} {newNotif.UserId} {newNotif.OtherId} {newNotif.Type} {newNotif.Text}");
+            }
+            return createdFriends;
         }
     }
 }

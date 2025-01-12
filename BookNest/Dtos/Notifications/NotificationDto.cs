@@ -13,9 +13,9 @@ namespace BookNest.Dtos.Notifications
             Text = text;
         }
         public int UserId { get; set; }
-        public string BookId { get; set; }
+        public string? BookId { get; set; }
         public string Text { get; set; }
-        public int OtherId { get; set; }
+        public int? OtherId { get; set; }
         public string Type { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using BookNest.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookNest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250112133754_update notification model-2")]
+    partial class updatenotificationmodel2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,6 +350,7 @@ namespace BookNest.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BookId")
+                        .IsRequired()
                         .HasColumnType("varchar(13)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -725,7 +729,9 @@ namespace BookNest.Migrations
                 {
                     b.HasOne("BookNest.Models.Entities.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BookNest.Models.Entities.User", "User")
                         .WithMany()

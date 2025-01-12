@@ -13,7 +13,7 @@ namespace BookNest.Dtos.Reviews
             Username = user.Username;
             Avatar = user.Avatar;
             BookId = review.BookId;
-            CreatedAt = review.CreatedAt;
+            CreatedAt = review.CreatedAt.ToString("o");
         }
         public int Id { get; set; }
         public string Text { get; set; }
@@ -23,6 +23,6 @@ namespace BookNest.Dtos.Reviews
 
         public string BookId { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public string CreatedAt { get; set; }
     }
 }

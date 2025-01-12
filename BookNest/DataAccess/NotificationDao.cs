@@ -33,6 +33,7 @@ namespace BookNest.DataAccess
         {
             return await _context.UserNotifications
                 .Where(u => u.UserId == userId)
+                .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
         }
 

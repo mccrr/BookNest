@@ -52,6 +52,7 @@ namespace BookNest.Services
             var notifications = await _notificationDao.GetAllUserNotifications(userId);
             foreach (var notification in notifications) {
                 var fullnoti = await _notificationDao.GetById(notification.NotificationId);
+                if (fullnoti == null) throw new NotFoundException($"fullnoti with id: {fullnoti.Id} doesnt exist");
                 Console.WriteLine($"fullnoti: {fullnoti.Id} {fullnoti.BookId} userId: {fullnoti.UserId} type:{fullnoti.Type} - otherId: {fullnoti.OtherId}");
                 var res = new NotifResDto();
                 var otherUser = new User();
@@ -61,7 +62,7 @@ namespace BookNest.Services
                         otherUser = await _forbiddenService.GetUserByIdAsync(fullnoti.OtherId ?? 0);
                     }
                     else otherUser = await _forbiddenService.GetUserByIdAsync(fullnoti.UserId);
-                    res = new NotifResDto(otherUser.Id, otherUser.Username, otherUser.Avatar,null, null, null, null, null, "friends", 0);
+                    res = new NotifResDto(otherUser.Id, otherUser.Username, otherUser.Avatar,null, null, null, null, null, "friends", 0,fullnoti.CreatedAt.ToString("0"));
                 }
                 else if(fullnoti.Type == "bookprogress")
                 {
@@ -71,7 +72,7 @@ namespace BookNest.Services
                     var book = await _forbiddenService.GetBookById(bookprogress.BookId);
                     var author = await _forbiddenService.GetAuthorById(book.AuthorId);
                     res = new NotifResDto(otherUser.Id, otherUser.Username, otherUser.Avatar, bookprogress.BookId,
-                        book.Title, author.Name, book.Cover, bookprogress.Status, "bookprogress", bookprogress.Progress);
+                        book.Title, author.Name, book.Cover, bookprogress.Status, "bookprogress", bookprogress.Progress,fullnoti.CreatedAt.ToString("o"));
                 }
                 result.Add(res);
             }

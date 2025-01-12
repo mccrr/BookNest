@@ -13,7 +13,8 @@
        string bookCover,
        string status,
        string type,
-       int progress)
+       int progress,
+       string createdAt)
         {
             UserId = userId;
             UserName = userName;
@@ -25,6 +26,7 @@
             BookCover = bookCover;
             Status = status;
             Progress = progress;
+            CreatedAt = createdAt;
         }
         public int UserId { get; set; }
         public string UserName { get; set; }
@@ -36,5 +38,6 @@
         public string? BookCover { get; set; }
         public string? Status { get; set; }
         public int? Progress { get; set; }
+        public string CreatedAt { get; set; }
     }
 }

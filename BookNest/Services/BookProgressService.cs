@@ -11,11 +11,14 @@ namespace BookNest.Services
         private readonly BookUserDao _bookUserDao;
         private readonly BookService _bookService;
         private readonly NotificationService _notificationService;
-        public BookProgressService(BookUserDao bookUserDao, BookService bookService, NotificationService notificationService)
+        private readonly ForbiddenService _forbiddenService;
+
+        public BookProgressService(BookUserDao bookUserDao, BookService bookService, NotificationService notificationService,ForbiddenService forbidden)
         {
             _bookUserDao = bookUserDao;
             _bookService = bookService;
             _notificationService = notificationService;
+            _forbiddenService = forbidden;
         }
 
         public async Task<BookUserDto> Create(BookUserDto bookUserDto, int userId)
@@ -101,6 +104,7 @@ namespace BookNest.Services
             foreach (var progress in progressList)
             {
                 await _bookUserDao.Delete(progress);
+                await _forbiddenService.RemoveNotifications(progress.UserId, progress.BookId);
             }
         }
 

@@ -36,5 +36,22 @@ namespace BookNest.Services
             return await _context.Authors.FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        public async Task RemoveNotifications(int userId, string BookId)
+        {
+            var notifications = await _context.Notifications
+                .Where(x => x.UserId==userId && x.BookId==BookId)
+                .ToListAsync();
+            var userNotification = new UserNotification();
+            foreach (var notification in notifications) { 
+                _context.Notifications.Remove(notification);
+                userNotification = await _context.UserNotifications.FirstOrDefaultAsync(x=>x.NotificationId==notification.Id);
+                if (userNotification != null)
+                {
+                    _context.UserNotifications.Remove(userNotification);
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

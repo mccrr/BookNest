@@ -12,6 +12,13 @@ namespace BookNest.DataAccess
             _context = context;
         }
 
+        public async Task<List<Friend>> GetAllFriends(int userId)
+        {
+            return await _context.Friends
+                .Where(x => x.UserId == userId || x.FriendId == userId)
+                .ToListAsync();
+        }
+
         public async Task<FriendRequest> SendRequest(FriendRequest friendRequest)
         {
             var result = await _context.AddAsync(friendRequest);

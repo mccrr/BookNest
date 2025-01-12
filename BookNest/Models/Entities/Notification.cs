@@ -17,7 +17,7 @@ namespace BookNest.Models.Entities
         [Key]
         public int Id { get; set; }
         [Required] 
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
         public User? User { get; set; }
         public int? OtherId { get; set; }
         public string? BookId { get; set; }

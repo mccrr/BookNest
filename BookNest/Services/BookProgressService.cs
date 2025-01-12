@@ -1,5 +1,6 @@
 ﻿using BookNest.DataAccess;
 using BookNest.Dtos.BookUsers;
+using BookNest.Dtos.Notifications;
 using BookNest.Models.Entities;
 using BookNest.Utils;
 
@@ -9,10 +10,12 @@ namespace BookNest.Services
     {
         private readonly BookUserDao _bookUserDao;
         private readonly BookService _bookService;
-        public BookProgressService(BookUserDao bookUserDao, BookService bookService)
+        private readonly NotificationService _notificationService;
+        public BookProgressService(BookUserDao bookUserDao, BookService bookService, NotificationService notificationService)
         {
             _bookUserDao = bookUserDao;
             _bookService = bookService;
+            _notificationService = notificationService;
         }
 
         public async Task<BookUserDto> Create(BookUserDto bookUserDto, int userId)
@@ -61,7 +64,8 @@ namespace BookNest.Services
                 var existingRead = await _bookUserDao.GetBookStatus(userId, bookUserDto.BookId, "read");
                 if (existingRead != null) await _bookUserDao.Delete(existingRead);
             }
-
+            var notifDto = new NotificationDto(userId, 0, newDbBookUser.BookId, "bookprogress", "");
+            await _notificationService.Create(notifDto);
             return new BookUserDto(newDbBookUser);
         }
 

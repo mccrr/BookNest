@@ -3,6 +3,7 @@ using BookNest.Models.Entities;
 using BookNest.Services;
 using BookNest.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BookNest.Controllers
 {
@@ -35,6 +36,14 @@ namespace BookNest.Controllers
         {
             await _notificationService.Delete(id);
             return BaseResponse<object>.SuccessResponse(null);
+        }
+
+        [HttpGet]
+        public async Task<IBaseResponse> GetAllNotifications()
+        {
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var notification = await _notificationService.GetAllUserNotifications(userId);
+            return BaseResponse<List<NotifResDto>>.SuccessResponse(notification);
         }
     }
 }

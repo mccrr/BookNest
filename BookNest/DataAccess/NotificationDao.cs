@@ -28,5 +28,22 @@ namespace BookNest.DataAccess
             _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<UserNotification>> GetAllUserNotifications(int userId)
+        {
+            return await _context.UserNotifications
+                .Where(u => u.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<UserNotification> CreateUserNotification(int userId, int notifId)
+        {
+            var userNoti = new UserNotification(userId, notifId);
+            var dbUn = await _context.UserNotifications.AddAsync(userNoti);
+            await _context.SaveChangesAsync();
+            return dbUn.Entity;
+        }
+
+        ////////////////FORBIDDEN CODE///////////////////////////////
     }
 }
